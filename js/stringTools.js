@@ -34,12 +34,16 @@ export default class StringTools {
     static minsRead(text) {
         const seconds = this.wordCount(text) * 0.3;
         const minutes = Math.round(seconds / 60);
-        const minutesRead = minutes > 1 ? `${minutes} minutes read` : `${minutes} minute read`;
+        const minutesRead = minutes > 1 ? `${minutes} minutes read` : `One minute read`;
         return minutesRead;
     }
 
     static safe(text = '') {
         return text.replace(/\s+/g, ' ').trim();
+    }
+
+    static charCount(text = '') {
+        return this.safe(text).length;
     }
 
     static isEmpty(text) {
@@ -56,12 +60,30 @@ export default class StringTools {
         .split(',')
         .map(tag => tag.trim())
         .filter(Boolean)
-        .map(tag => `#${tag}`)
-        .join(' ');
+        .map(tag => `#${tag}`);
+    }
+
+    static detagify(tags = '') {
+        if (Array.isArray(tags)) {
+            return tags.map(t => t.replace(/#/g, '')).join(', ');
+        }
+        return tags.replace(/#/g, '').split(' ').join(', ');
     }
 
     static categorize(category = []) {
         return category.map(c => c.toUpperCase())
         .join(" | ");
+    }
+
+    static decategorize(category = '') {
+        return category.split(" | ")
+        .map(c => c.toLowerCase());
+    }
+
+    static pluralize(count, singular, plural = null) {
+        if (count === 1) {
+            return singular;
+        }
+        return plural || (singular + 's');
     }
 }
