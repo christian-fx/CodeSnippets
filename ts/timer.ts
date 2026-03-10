@@ -1,5 +1,11 @@
-/* export default class Timer {
-    constructor(duration) {
+export default class Timer {
+    duration: number;
+    remaining: number;
+    startTime: number | null;
+    timeoutId: ReturnType<typeof setTimeout> | null;
+    finished: boolean;
+    
+    constructor(duration: number) {
         this.duration = duration;
         this.remaining = duration;
         this.startTime = null;
@@ -16,7 +22,7 @@
             this.finished = true;
             this.timeoutId = null;
         }, this.remaining);
-        Timer.checker()
+        this.checker();
     }
 
     pause() {
@@ -25,12 +31,16 @@
         clearTimeout(this.timeoutId);
         this.timeoutId = null;
 
+        if (this.startTime === null) return;
+
         const elapsed = Date.now() - this.startTime;
         this.remaining -= elapsed;
     }
 
     reset() {
-        clearTimeout(this.timeoutId);
+        if (this.timeoutId !== null) {
+            clearTimeout(this.timeoutId);
+        }
 
         this.remaining = this.duration;
         this.startTime = null;
@@ -42,14 +52,12 @@
         return this.finished;
     }
     
-    static checker() {
+    checker() {
         const watcher = setInterval(() => {
-            if (timer.isFinished()) {
+            if (this.isFinished()) {
                 console.log("Time's Up!");
                 clearInterval(watcher);
             }
         }, 100);
     }
- 
 }
- */

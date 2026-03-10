@@ -1,9 +1,12 @@
-/* // THIS FUNC HELPS TO EXPIRE THE MAPBUCKET AFTER A CERTAIN DURATION
+// THIS FUNC HELPS TO EXPIRE THE MAPBUCKET AFTER A CERTAIN DURATION
 
 export default class Expire {
-    constructor(duration, mapBucket) {
+    duration: number;
+    timeOutId: ReturnType<typeof setTimeout> | null;
+    mapBucket: Map<any, any>;
+    constructor(duration: number, mapBucket: Map<any, any>) {
         this.duration = duration;
-        this.timeOutId = this.timeOutId;
+        this.timeOutId = null;
         this.mapBucket = mapBucket;
     }
 
@@ -14,9 +17,11 @@ export default class Expire {
     }
 
     drain() {
-        clearTimeout(this.timeOutId);
+        if (this.timeOutId !== null) {
+            clearTimeout(this.timeOutId);
+            this.timeOutId = null;
+        }
         this.duration = 0;
-        this.mapBucket = null;
+        this.mapBucket.clear();
     }
 }
- */
