@@ -11,6 +11,7 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
   
   // alternatively, you can use a single DATABASE_URL connection string:
+  
   // connectionString: process.env.DATABASE_URL,
 });
 
