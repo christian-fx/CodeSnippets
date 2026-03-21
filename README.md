@@ -29,6 +29,9 @@ CodeSnippets/
 │       ├── .env.example
 │       └── README.md
 ├── python/
+│   ├── api-request-helper/
+│   │   ├── api-request-helper.py
+│   │   └── README.md
 │   └── data-handling/
 │       ├── data-handling.py
 │       └── README.md
