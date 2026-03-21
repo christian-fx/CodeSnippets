@@ -1,67 +1,67 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 
-/**
- * A reusable custom hook for copying text to the clipboard.
- * 
- * @returns {Array} [isCopied, copy] - A boolean indicating if the text was copied successfully, and the copy function.
- */
-export const useCopyToClipboard = () => {
+const CopyToClipboard = ({ textToCopy = "Allwell Azubike" }) => {
   const [isCopied, setIsCopied] = useState(false);
+  const textInputRef = useRef(null);
 
-  const copy = useCallback(async (text) => {
-    // Check if the clipboard API is supported
-    if (!navigator?.clipboard) {
-      console.warn('Clipboard API not supported in this environment');
-      return false;
-    }
-
+  const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(text);
+      // modern way (requires HTTPS or localhost)
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(textInputRef.current.value);
+      } else {
+        // fallback for local file:// testing or older browsers
+        textInputRef.current.select();
+        document.execCommand("copy");
+        // deselect the text so it doesn't stay highlighted
+        window.getSelection().removeAllRanges();
+      }
+
+      // update ui state
       setIsCopied(true);
       
-      // Reset the copied state after 2 seconds
+      // reset after 2 seconds
       setTimeout(() => setIsCopied(false), 2000);
-      return true;
-    } catch (error) {
-      console.error('Failed to copy text to clipboard:', error);
-      setIsCopied(false);
-      return false;
+    } catch (err) {
+      console.error("Failed to copy text:", err);
+      alert("Failed to copy to clipboard.");
     }
-  }, []);
-
-  return [isCopied, copy];
-};
-
-/**
- * An example wrapper component that utilizes the hook.
- * 
- * @param {Object} props
- * @param {string} props.textToCopy - The text you want to be copied.
- * @param {string} props.label - Button text before copying.
- * @param {string} props.successLabel - Button text after successfully copying.
- */
-const CopyToClipboard = ({ textToCopy, label = 'Copy', successLabel = 'Copied!' }) => {
-  const [isCopied, copy] = useCopyToClipboard();
+  };
 
   return (
-    <button
-      onClick={() => copy(textToCopy)}
-      style={{
-        padding: '8px 16px',
-        backgroundColor: isCopied ? '#4caf50' : '#2196f3',
-        color: '#ffffff',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: '500',
-        transition: 'background-color 0.2s ease-in-out',
-      }}
-      title="Copy to clipboard"
-      aria-label="Copy to clipboard"
-    >
-      {isCopied ? successLabel : label}
-    </button>
+    <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full mx-4">
+      <h2 className="text-2xl font-bold mb-5 text-gray-800">Copy to Clipboard</h2>
+      
+      <div className="relative">
+        <input 
+          type="text" 
+          ref={textInputRef}
+          value={textToCopy} 
+          readOnly
+          className="w-full bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3 pr-24 outline-none transition-all duration-200"
+        />
+        <button 
+          onClick={handleCopy}
+          className={`absolute right-1.5 top-1.5 bottom-1.5 text-white font-medium text-sm px-4 rounded-md transition-colors duration-200 flex items-center justify-center min-w-[70px] ${
+            isCopied ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+          }`}
+        >
+          {isCopied ? "Copied!" : "Copy"}
+        </button>
+      </div>
+      
+      {/* copied message */}
+      <p 
+        className={`mt-3 text-sm text-green-600 font-medium transition-opacity duration-300 flex items-center gap-1 ${
+          isCopied ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Copied to clipboard!
+      </p>
+    </div>
   );
 };
 
