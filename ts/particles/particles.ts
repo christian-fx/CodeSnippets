@@ -22,6 +22,7 @@ class Particle {
         this.x += this.speedX;
         this.y += this.speedY;
 
+        // Conditionals for bounce effects
         if (this.x < 0 || this.x > canvas.width) {
             this.speedX *= -1;
         }
@@ -53,7 +54,6 @@ function animate() {
         particle.update();
         particle.draw();
     });
-
     requestAnimationFrame(animate);
 }
 
