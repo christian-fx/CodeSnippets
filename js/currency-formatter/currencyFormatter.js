@@ -5,13 +5,7 @@
  * for conversion rates and compact notation (K, M, B).
  */
 
-const CURRENCY_MAP = {
-  'United States Dollar (USD)': { symbol: '$', code: 'USD', rate: 1 },
-  'Euro (EUR)': { symbol: '€', code: 'EUR', rate: 0.92 },
-  'British Pound (GBP)': { symbol: '£', code: 'GBP', rate: 0.79 },
-  'Japanese Yen (JPY)': { symbol: '¥', code: 'JPY', rate: 151 },
-  'Nigerian Naira (NGN)': { symbol: '₦', code: 'NGN', rate: 1500 }
-};
+import map from "CURRENCY_MAP.js";
 
 /**
  * Format a price based on currency configuration
@@ -31,7 +25,7 @@ export const formatPrice = (amount, currencyName = 'United States Dollar (USD)',
 
   if (isNaN(cleanAmount)) return '—';
 
-  const config = CURRENCY_MAP[currencyName] || CURRENCY_MAP['United States Dollar (USD)'];
+  const config = map[currencyName] || map['United States Dollar (USD)'];
   const convertedAmount = cleanAmount * config.rate;
 
   const formatted = new Intl.NumberFormat('en-US', {
@@ -53,7 +47,7 @@ export const formatPrice = (amount, currencyName = 'United States Dollar (USD)',
 export const formatCompactPrice = (value, currencyName = 'United States Dollar (USD)') => {
   if (!value && value !== 0) return '—';
   
-  const config = CURRENCY_MAP[currencyName] || CURRENCY_MAP['United States Dollar (USD)'];
+  const config = map[currencyName] || CURRENCY_MAP['United States Dollar (USD)'];
   const converted = value * config.rate;
 
   const symbol = config.symbol;
@@ -65,4 +59,4 @@ export const formatCompactPrice = (value, currencyName = 'United States Dollar (
   return `${symbol}${Math.round(converted)}`;
 };
 
-export { CURRENCY_MAP };
+export default map;
