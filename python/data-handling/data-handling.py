@@ -1,5 +1,5 @@
 import csv
-
+# imagine ending an import statement without a semicolon; python is too loose.
 cleaned_data = []
 with open('data.csv', 'r') as file:
     reader = csv.DictReader(file)
